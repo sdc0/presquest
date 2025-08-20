@@ -1,17 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { HashRouter, Routes, Route } from "react-router-dom";
+
+import StudentHome from "./pages/student-home/student-home";
+import TeacherHome from "./pages/teacher-home/teacher-home";
+import Student from "./pages/student/student";
+import Teacher from './pages/teacher/teacher';
+
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+
+export default function App() {
+    return (
+        <HashRouter>
+            <Routes>
+                <Route path='/' element={<StudentHome />} />
+                <Route path='teacher-home' element={<TeacherHome />} />
+                <Route path='student' element={<Student />} />
+                <Route path='teacher' element={<Teacher />} />
+            </Routes>
+        </HashRouter>
+    )
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+root.render(<App />);

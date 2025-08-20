@@ -1,0 +1,109 @@
+body {
+    /* color pallette generated via coolors.co, so blame them */
+    --licorice: #220C10;
+    --raisin-black: #2E2425;
+    --onyx: #393C3A;
+    --feldgrau: #506C64;
+
+    --zomp: #649C8F;
+    --keppel: #6EB4A4;
+    --tiffany-blue: #77CBB9;
+    --moonstone: #75B8C8;
+    --light-blue: #A1C6CF;
+    --columbia-blue: #B7CDD2;
+    --silver: #CDD3D5;
+}
+
+.navbar {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: horizontal;
+    margin: auto;
+    padding: 0;
+
+    width: 100vw;
+
+    background-color: var(--keppel);
+    color: var(--licorice);
+}
+
+.navbar-item {
+    border: solid var(--licorice) 2px;
+    border-left-width: 0;
+
+    width: 100%;
+    text-align: center;
+}
+
+.navbar-item:hover {
+    background-color: var(--moonstone);
+    color: var(--licorice);
+}
+
+.navbar-text {
+    padding: 0;
+    margin: 8px 0;
+}
+
+.active {
+    background-color: var(--onyx);
+    color: white;
+}
+
+.login {
+    display: flex;
+    flex: 1 1 auto;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.login .container {
+    flex-direction: column;
+
+    background-color: var(--keppel);
+    color: var(--licorice);
+}
+
+.container {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.bordered {
+    padding: 5px;
+    border: solid var(--licorice) 3px;
+    border-radius: 5px;
+}
+
+.form-item {
+    display: flex;
+
+    gap: 10px;
+    padding: 5px;
+}
+
+.form-item label {
+    flex: 0 1 auto;
+}
+
+.form-item input {
+    flex: 1 1 auto;
+}
+
+.form-submit {
+    width: min-content;
+
+    margin: 5px;
+}
+
+#main-body {
+    flex-direction: column;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: var(--columbia-blue);
+}
