@@ -12,6 +12,11 @@ body {
     --light-blue: #A1C6CF;
     --columbia-blue: #B7CDD2;
     --silver: #CDD3D5;
+
+
+    --border-width: 3px;
+    --margin-size: 10px;
+    --border-padding: 5px;
 }
 
 .navbar {
@@ -28,7 +33,7 @@ body {
 }
 
 .navbar-item {
-    border: solid var(--licorice) 2px;
+    border: solid var(--licorice) var(--border-width);
     border-left-width: 0;
 
     width: 100%;
@@ -80,16 +85,20 @@ body {
     flex-direction: row;
 }
 
+.grow {
+    flex-grow: 1;
+}
+
 .bordered {
-    padding: 5px;
-    border: solid var(--licorice) 3px;
+    padding: var(--border-padding);
+    border: solid var(--licorice) var(--border-width);
     border-radius: 5px;
 }
 
 .form-item {
     display: flex;
 
-    gap: 10px;
+    gap: var(--margin-size);
     padding: 5px;
 }
 

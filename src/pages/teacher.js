@@ -16,15 +16,21 @@ export default function Teacher({class_id, set_class_id}) {
     }, [class_id]);
 
     return (
-        <div className="container horizontal" id="main-body">
-            <div className="container vertical bordered">
-                {
-                    messages.map((message, index) => {
-                        return <p>{message.message}</p>
-                    })
-                }
+        <div className="container horizontal" style={{gap: "var(--margin-size)"}} id="main-body">
+            <div className="container grow" style={{height: "100vh"}}>
+                <div className="container vertical bordered" style={{margin: "var(--margin-size) 0 var(--margin-size) var(--margin-size)", height: "calc(100% - var(--border-padding) * 2 - var(--border-width) * 2 - var(--margin-size) * 2)", width: "100%"}}>
+                    {
+                        messages.map((message, index) => {
+                            return <div>
+                                <p>{message.message}</p>
+                            </div>
+                        })
+                    }
+                </div>
             </div>
-            <p>Teacher route working</p>
+            <div className="container bordered vertical grow" style={{margin: "0 var(--margin-size) 0 0"}}>
+                <p>Teacher route works</p>
+            </div>
         </div>
     )
 }
