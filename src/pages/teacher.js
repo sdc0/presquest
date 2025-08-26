@@ -29,6 +29,7 @@ export default function Teacher({class_id, set_class_id}) {
                 </div>
             </div>
             <div className="container bordered vertical grow" style={{margin: "0 var(--margin-size) 0 0"}}>
+                <p>Class ID: {class_id}</p>
                 <p>Teacher route works</p>
             </div>
         </div>
