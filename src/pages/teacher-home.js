@@ -10,37 +10,36 @@ export default function TeacherHome({class_id, set_class_id}) {
         e.preventDefault();
 
         let class_name = document.getElementById("id_input").value;
-
-        await fetch(baseURL + "classes/create", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: {
-                'title': class_name,
-                'date': (new Date()).toDateString()
-            }
-        }).then(data => {
-            console.log(data);
-        });
-        /*let active = false;
+        let active = false;
+        let classes = await fetch(baseURL + "classes").then(data => data.json());
 
         for (let c in classes) {
             // eslint-disable-next-line
-            if (classes[c].id == temp_class_id) {
-                active = true;
+            if (classes[c].title == class_name) {
+                active = true; // TODO: edit to set class as active (need fix to database)
+                set_class_id(classes[c].id);
                 break;
             }
         }
 
-        set_class_id(temp_class_id);
-
         if (!active) {
-            console.log("No class with id found or class inactive");
-            return;
+            console.log("Class not found, creating new class");
+            await fetch(baseURL + "classes/create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: class_name,
+                    date: (new Date()).toISOString().replace("T", " ").split(".")[0]
+                })
+            }).then(data => data.text()).then(data => {
+                console.log(data);
+                set_class_id(Number(data.split("id ")[1]));
+            });
         }
 
-        nav("/teacher");*/
+        nav("/teacher");
     }
 
     return (
