@@ -10,16 +10,16 @@ import Teacher from './pages/teacher';
 import './index.css';
 
 export default function App() {
-    const [class_id, set_class_id] = useState("");
+    const [current_class, set_current_class] = useState("");
     const [username, set_username] = useState("");
 
     return (
         <HashRouter>
             <Routes>
-                <Route path='/' element={<StudentHome class_id={class_id} set_class_id={set_class_id} username={username} set_username={set_username} />} />
-                <Route path='teacher-home' element={<TeacherHome class_id={class_id} set_class_id={set_class_id} />} />
-                <Route path='student' element={<Student class_id={class_id} set_class_id={set_class_id} username={username} set_username={set_username} />} />
-                <Route path='teacher' element={<Teacher class_id={class_id} set_class_id={set_class_id} />} />
+                <Route path='/' element={<StudentHome current_class={current_class} set_current_class={set_current_class} username={username} set_username={set_username} />} />
+                <Route path='teacher-home' element={<TeacherHome current_class={current_class} set_current_class={set_current_class} />} />
+                <Route path='student' element={<Student current_class={current_class} set_current_class={set_current_class} username={username} set_username={set_username} />} />
+                <Route path='teacher' element={<Teacher current_class={current_class} set_current_class={set_current_class} />} />
             </Routes>
         </HashRouter>
     )

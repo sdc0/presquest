@@ -72,9 +72,14 @@ body {
 
 .container {
     display: flex;
+}
 
-    align-items: center;
+.centered-vertical {
     justify-content: center;
+}
+
+.centered-horizontal {
+    align-items: center;
 }
 
 .vertical {
@@ -86,7 +91,7 @@ body {
 }
 
 .grow {
-    flex-grow: 1;
+    flex: 1;
 }
 
 .bordered {
@@ -114,6 +119,16 @@ body {
     width: min-content;
 
     margin: 5px;
+}
+
+.info-field {
+    padding: 0;
+    margin: 16px 0;
+}
+
+.sub-window-bg {
+    background-color: var(--keppel);
+    color: var(--licorice);
 }
 
 #main-body {

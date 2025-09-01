@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import "./styles.css";
 
-export default function TeacherHome({class_id, set_class_id}) {
+export default function TeacherHome({current_class, set_current_class}) {
     const nav = useNavigate();
     const baseURL = "https://samcham.pythonanywhere.com/";
 
@@ -11,13 +11,15 @@ export default function TeacherHome({class_id, set_class_id}) {
 
         let class_name = document.getElementById("id_input").value;
         let active = false;
-        let classes = await fetch(baseURL + "classes").then(data => data.json());
+        let classes = await fetch(baseURL + "classes").then(data => data.json(), {
+            method: "GET"
+        });
 
         for (let c in classes) {
             // eslint-disable-next-line
             if (classes[c].title == class_name) {
-                active = true; // TODO: edit to set class as active (need fix to database)
-                set_class_id(classes[c].id);
+                active = true;
+                set_current_class(classes[c]);
                 break;
             }
         }
@@ -33,9 +35,9 @@ export default function TeacherHome({class_id, set_class_id}) {
                     title: class_name,
                     date: (new Date()).toISOString().replace("T", " ").split(".")[0]
                 })
-            }).then(data => data.text()).then(data => {
+            }).then(data => data.json()).then(data => {
                 console.log(data);
-                set_class_id(Number(data.split("id ")[1]));
+                set_current_class(data);
             });
         }
 
@@ -43,7 +45,7 @@ export default function TeacherHome({class_id, set_class_id}) {
     }
 
     return (
-        <div className="container vertical" id="main-body">
+        <div className="container centered-vertical centered-horizontal vertical" id="main-body">
             <div className="navbar">
                 <div className="navbar-item" onClick={(e) => {e.preventDefault(); nav("/");}}>
                     <p className="navbar-text">Student View</p>
@@ -54,7 +56,7 @@ export default function TeacherHome({class_id, set_class_id}) {
             </div>
 
             <form className="login">
-                <div className="container bordered">
+                <div className="container centered-vertical centered-horizontal bordered">
                     <div className="form-item">
                         <label htmlFor="id_input">Class</label>
                         <input id="id_input" placeholder="Enter Class Name (e.x. Bio325)..." />

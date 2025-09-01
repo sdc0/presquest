@@ -1,7 +1,7 @@
 import "./styles.css";
 
-export default function Student({class_id, set_class_id, username, set_username}) {
-    console.log(class_id);
+export default function Student({current_class, set_current_class, username, set_username}) {
+    console.log(current_class);
     console.log(username);
     return (
         <>

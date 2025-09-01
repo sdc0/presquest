@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import "./styles.css";
 
-export default function StudentHome({class_id, set_class_id, username, set_username}) {
+export default function StudentHome({current_class, set_current_class, username, set_username}) {
     const nav = useNavigate();
     const baseURL = "https://samcham.pythonanywhere.com/";
 
@@ -12,8 +12,11 @@ export default function StudentHome({class_id, set_class_id, username, set_usern
         let temp_class_id = document.getElementById("id_input").value;
         let temp_username = document.getElementById("username_input").value;
 
-        set_class_id(temp_class_id);
-        set_username(temp_username);
+        // eslint-disable-next-line
+        if (temp_username == "") {
+            console.log("Enter a username");
+            return;
+        }
 
         let classes = await fetch(baseURL + "classes").then(data => data.json());
         let active = false;
@@ -21,6 +24,7 @@ export default function StudentHome({class_id, set_class_id, username, set_usern
         for (let c in classes) {
             // eslint-disable-next-line
             if (classes[c].id == temp_class_id) {
+                set_current_class(classes[c]);
                 active = true;
                 break;
             }
@@ -31,17 +35,13 @@ export default function StudentHome({class_id, set_class_id, username, set_usern
             return;
         }
 
-        // eslint-disable-next-line
-        if (temp_username == "") {
-            console.log("Enter a username");
-            return;
-        }
+        set_username(temp_username);
 
         nav("/student");
     }
     
     return (
-        <div className="container vertical" id="main-body">
+        <div className="container centered-vertical centered-horizontal vertical" id="main-body">
             <div className="navbar">
                 <div className="navbar-item active" onClick={(e) => {e.preventDefault(); nav("/");}}>
                     <p className="navbar-text">Student View</p>
@@ -52,7 +52,7 @@ export default function StudentHome({class_id, set_class_id, username, set_usern
             </div>
 
             <form className="login">
-                <div className="container bordered">
+                <div className="container centered-vertical centered-horizontal bordered">
                     <div className="form-item">
                         <label htmlFor="id_input">Class ID</label>
                         <input id="id_input" placeholder="Enter Class ID..." />
