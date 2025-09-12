@@ -1,72 +1,87 @@
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
+import { get, createClass, createClassInstance } from "../helpers/api";
+import { formatDateStringFromDatabase } from "../helpers/utils";
 
 import "./styles.css";
 
-export default function Teacher({current_class, set_current_class}) {
-    const baseURL = "https://samcham.pythonanywhere.com/";
-
-    const [messages, setMessages] = useState([]);
+export default function Teacher({instructor, set_current_class, set_current_class_instance}) {
+    const nav = useNavigate();
+    const [classes, set_classes] = useState([]);
+    const [checked, set_checked] = useState([]);
 
     useEffect(() => {
-        fetch(`${baseURL}messages/class?id=${current_class.id}`).then(data => data.json()).then(data => {
-            let m = [];
-            for (let d in data) m.push(data[d]);
-            setMessages(m);
+        get("classes", undefined, undefined, undefined, instructor.id).then(data => {
+            set_classes(data);
+            console.log(data);
         });
-    }, [current_class]);
+    }, [instructor]);
 
-    function getDate() {
-        let halves = current_class.date.split(" ");
+    async function enterClass(class_index, id) {
+        set_current_class(classes[class_index]);
 
-        let dates = halves[0].split("-");
-        let times = halves[1].split(":");
-
-        let pm = Number(times[0]) > 12;
-
-        return `${pm ? times[0] - 12 : times[0]}:${times[1]}:${times[2]} ${pm ? "pm" : "am"} ${dates[1]}/${dates[2]}/${dates[0]}`;
-    }
-
-    async function toggleClass() {
-        await fetch(baseURL + "classes/toggle", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                id: current_class.id
-            })
-        }).then(data => data.json()).then(data => {
-            set_current_class(data);
-            console.log(`Active is now ${data.active}`);
+        await get("class_instances", id).then(data => {
+            console.log(data);
+            set_current_class_instance(data[0]);
         });
+
+        nav("/class-home");
     }
 
     return (
-        <div className="container centered-vertical centered-horizontal horizontal" id="main-body">
-            <div className="container centered-vertical centered-horizontal grow" style={{height: "100vh"}}>
-                <div className="container centered-horizontal vertical bordered sub-window-bg" style={{margin: "var(--margin-size)", height: "calc(100% - 2 * var(--margin-size) - 2 * var(--border-padding) - 2 * var(--border-width))", width: "100%"}}>
-                    <h3>Message Log</h3>
-                    <div style={{display: "flex", width: "75%", height: "var(--border-width)", backgroundColor: "var(--licorice)"}}></div>
-                    {
-                        messages.map((message, index) => {
-                            return <div>
-                                <p>{message.message}</p>
-                            </div>
-                        })
-                    }
-                </div>
-            </div>
-            <div className="container centered-vertical centered-horizontal vertical grow" style={{height: "100vh"}}>
-                <div className="container centered-vertical centered-horizontal bordered vertical sub-window-bg" style={{margin: "var(--margin-size)", width: "calc(100% - 2 * var(--margin-size) - 2 * var(--border-padding) - 2 * var(--border-width))"}}>
-                    <p className="info-field">Class ID: {current_class.id}</p>
-                    <p className="info-field">Class starts at {getDate()}</p>
-                    <p className="info-field">Class is currently {current_class.active ? "active" : "not active"}</p>
-                    <button onClick={toggleClass} className="info-field">Toggle Class Activation</button>
-                </div>
-                <div className="container centered-vertical centered-horizontal bordered vertical sub-window-bg grow" style={{margin: "var(--margin-size)", width: "calc(100% - 2 * var(--margin-size) - 2 * var(--border-padding) - 2 * var(--border-width))"}}>
-
-                </div>
+        <div className="container centered-vertical centered-horizontal vertical" id="main-body">
+            <div className="container container-bg bordered centered-vertical centered-horizontal vertical" style={{padding: "0", margin: "var(--margin-size)"}}>
+                {
+                    classes.map((cls, i) => {
+                        if (i >= checked.length) set_checked([...checked, []]);
+                        return (
+                            <>
+                                {
+                                    i === 0 ? <></> : <div style={{display: "flex", width: "100%", height: "var(--border-width)", backgroundColor: "var(--licorice)"}}></div>
+                                }
+                                <div style={{padding: "var(--padding-size)"}}>
+                                    <div className="container horizontal centered-horizontal" style={{gap: "10px"}}>
+                                        <h3 style={{margin: "0", marginTop: "5px"}}>{cls.title} (Class ID: {cls.id})</h3>
+                                    </div>
+                                    <div>
+                                        <h5>Instructors: </h5>
+                                        <ul style={{paddingLeft: "15px"}}>
+                                            {
+                                                cls.instructors.map((instructor) => {
+                                                    return (
+                                                        <li>
+                                                            <p>{instructor.username} (Instructor ID: {instructor.id}) from {instructor.school}</p>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5>Class Instances: </h5>
+                                        <ul style={{paddingLeft: "15px"}}>
+                                            {
+                                                cls.class_instances.map((instance, j) => {
+                                                    return (
+                                                        <li className="container centered-horizontal">
+                                                            <p>{formatDateStringFromDatabase(instance.date)} (Instance ID: {instance.id})</p>
+                                                            <button style={{height: "22px", marginLeft: "calc(var(--padding-size) * 2)"}} onClick={(e) => {
+                                                                e.preventDefault();
+                                                                enterClass(i, instance.id);
+                                                            }}>Enter Class</button>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </>
+                        )
+                    })
+                }
             </div>
         </div>
-    );
+    )
 }

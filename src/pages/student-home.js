@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
+import { get } from "../helpers/api";
 import "./styles.css";
 
 export default function StudentHome({current_class, set_current_class, username, set_username}) {
     const nav = useNavigate();
-    const baseURL = "https://samcham.pythonanywhere.com/";
 
     async function submit(e) {
         e.preventDefault();
@@ -18,14 +18,14 @@ export default function StudentHome({current_class, set_current_class, username,
             return;
         }
 
-        let classes = await fetch(baseURL + "classes").then(data => data.json());
+        let classes = await get("classes");
         let active = false;
 
         for (let c in classes) {
             // eslint-disable-next-line
             if (classes[c].id == temp_class_id) {
-                set_current_class(classes[c]);
-                active = true;
+                active = classes[c].active;
+                if (active) set_current_class(classes[c]);
                 break;
             }
         }
@@ -51,7 +51,7 @@ export default function StudentHome({current_class, set_current_class, username,
                 </div>
             </div>
 
-            <form className="login">
+            <form className="form">
                 <div className="container centered-vertical centered-horizontal bordered">
                     <div className="form-item">
                         <label htmlFor="id_input">Class ID</label>

@@ -1,45 +1,64 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
+import { get, createInstructor } from "../helpers/api";
 import "./styles.css";
 
-export default function TeacherHome({current_class, set_current_class}) {
+export default function TeacherHome({set_instructor}) {
     const nav = useNavigate();
-    const baseURL = "https://samcham.pythonanywhere.com/";
+    const [loggingIn, setLoggingIn] = useState(true);
 
-    async function submit(e) {
+    async function login(e) {
         e.preventDefault();
 
-        let class_name = document.getElementById("id_input").value;
-        let active = false;
-        let classes = await fetch(baseURL + "classes").then(data => data.json(), {
-            method: "GET"
-        });
+        let username = document.getElementById("username_input").value;
+        let password = document.getElementById("password_input").value;
+        let school = document.getElementById("school_input").value;
 
-        for (let c in classes) {
+        let exists = false;
+        let instructors = await get("instructors");
+
+        for (let i in instructors) {
             // eslint-disable-next-line
-            if (classes[c].title == class_name) {
-                active = true;
-                set_current_class(classes[c]);
-                break;
+            if (instructors[i].username == username) {
+                // eslint-disable-next-line
+                if (instructors[i].password == password && instructors[i].school == school) {
+                    set_instructor(instructors[i]);
+                    exists = true;
+                    break;
+                }
             }
         }
 
-        if (!active) {
-            console.log("Class not found, creating new class");
-            await fetch(baseURL + "classes/create", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title: class_name,
-                    date: (new Date()).toISOString().replace("T", " ").split(".")[0]
-                })
-            }).then(data => data.json()).then(data => {
-                console.log(data);
-                set_current_class(data);
-            });
+        if (!exists) {
+            document.getElementById("error-message").textContent = "Wrong username, password, or school, try again";
+            console.log("Wrong username, password, or school, try again");
+            return;
         }
+
+        nav("/teacher");
+    }
+
+    async function signup(e) {
+        e.preventDefault();
+
+        let username = document.getElementById("username_input").value;
+        let password = document.getElementById("password_input").value;
+        let password_confirm = document.getElementById("password_confirm").value;
+        let school = document.getElementById("school_input").value;
+
+        if (password !== password_confirm) {
+            document.getElementById("error-message").textContent = "Passwords didn't match, try again";
+            console.log("Passwords didn't match, try again");
+            document.getElementById("password_input").value = "";
+            document.getElementById("password_confirm").value = "";
+            return;
+        }
+
+        await createInstructor(username, password, school).then(data => {
+            set_instructor(data);
+            console.log(data);
+        });
 
         nav("/teacher");
     }
@@ -55,15 +74,61 @@ export default function TeacherHome({current_class, set_current_class}) {
                 </div>
             </div>
 
-            <form className="login">
-                <div className="container centered-vertical centered-horizontal bordered">
-                    <div className="form-item">
-                        <label htmlFor="id_input">Class</label>
-                        <input id="id_input" placeholder="Enter Class Name (e.x. Bio325)..." />
-                    </div>
-                    <button className="form-submit" onClick={(e) => submit(e)}>Submit</button>
-                </div>
-            </form>
+            {
+                loggingIn ? (
+                    <form className="form">
+                        <div className="container centered-vertical centered-horizontal bordered">
+                            <h1>Login</h1>
+                            <div className="form-item">
+                                <label htmlFor="username_input">Username</label>
+                                <input id="username_input" placeholder="Enter username..." />
+                            </div>
+                            <div className="form-item">
+                                <label htmlFor="password_input">Password</label>
+                                <input type="password" id="password_input" placeholder="Enter password..." />
+                            </div>
+                            <div className="form-item">
+                                <label htmlFor="school_input">School</label>
+                                <input id="school_input" placeholder="Enter your school..." />
+                            </div>
+                            <button className="form-submit" onClick={(e) => login(e)}>Submit</button>
+                            <p style={{color: "red", margin: "0"}} id="error-message"></p>
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                setLoggingIn(false);
+                            }}>Switch to Sign Up</button>
+                        </div>
+                    </form>
+                ) : (
+                    <form className="form">
+                        <div className="container centered-vertical centered-horizontal bordered">
+                            <h1>Sign Up</h1>
+                            <div className="form-item">
+                                <label htmlFor="username_input">Username</label>
+                                <input id="username_input" placeholder="Enter username..." />
+                            </div>
+                            <div className="form-item">
+                                <label htmlFor="password_input">Password</label>
+                                <input type="password" id="password_input" placeholder="Enter password..." />
+                            </div>
+                            <div className="form-item">
+                                <label htmlFor="password_confirm">Confirm Password</label>
+                                <input type="password" id="password_confirm" placeholder="Enter password..." />
+                            </div>
+                            <div className="form-item">
+                                <label htmlFor="school_input">School</label>
+                                <input id="school_input" placeholder="Enter your school..." />
+                            </div>
+                            <button className="form-submit" onClick={(e) => signup(e)}>Submit</button>
+                            <p style={{color: "red", margin: "0"}} id="error-message"></p>
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                setLoggingIn(true);
+                            }}>Switch to Login</button>
+                        </div>
+                    </form>
+                )
+            }
         </div>
     )
 }
