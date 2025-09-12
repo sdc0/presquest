@@ -15,7 +15,7 @@ export async function get(type, id=undefined, class_id=undefined, class_instance
 }
 
 export async function toggleClassInstance(id) {
-    return await fetch(baseURL + "classes/toggle", {
+    return await fetch(baseURL + "class_instances/toggle", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

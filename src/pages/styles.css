@@ -13,6 +13,8 @@ body {
     --columbia-blue: #B7CDD2;
     --silver: #CDD3D5;
 
+    --error-red: #B40000;
+
 
     --border-width: 3px;
     --margin-size: 10px;
@@ -135,6 +137,11 @@ body {
 .sub-window-bg {
     background-color: var(--keppel);
     color: var(--licorice);
+}
+
+.error-message {
+    color: var(--error-red);
+    margin: 0;
 }
 
 #main-body {

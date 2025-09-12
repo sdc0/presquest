@@ -91,8 +91,8 @@ export default function TeacherHome({set_instructor}) {
                                 <label htmlFor="school_input">School</label>
                                 <input id="school_input" placeholder="Enter your school..." />
                             </div>
-                            <button className="form-submit" onClick={(e) => login(e)}>Submit</button>
-                            <p style={{color: "red", margin: "0"}} id="error-message"></p>
+                            <button className="form-submit" onClick={(e) => login(e)}>Log in</button>
+                            <p className="error-message" id="error-message"></p>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 setLoggingIn(false);
@@ -119,8 +119,8 @@ export default function TeacherHome({set_instructor}) {
                                 <label htmlFor="school_input">School</label>
                                 <input id="school_input" placeholder="Enter your school..." />
                             </div>
-                            <button className="form-submit" onClick={(e) => signup(e)}>Submit</button>
-                            <p style={{color: "red", margin: "0"}} id="error-message"></p>
+                            <button className="form-submit" onClick={(e) => signup(e)}>Sign Up</button>
+                            <p className="error-message" id="error-message"></p>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 setLoggingIn(true);

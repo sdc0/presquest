@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { get } from "../helpers/api";
 import "./styles.css";
 
-export default function StudentHome({current_class, set_current_class, username, set_username}) {
+export default function StudentHome({set_current_class, set_current_class_instance, set_username}) {
     const nav = useNavigate();
 
     async function submit(e) {
         e.preventDefault();
 
-        let temp_class_id = document.getElementById("id_input").value;
+        let temp_class_instance_id = document.getElementById("id_input").value;
         let temp_username = document.getElementById("username_input").value;
 
         // eslint-disable-next-line
@@ -18,23 +18,24 @@ export default function StudentHome({current_class, set_current_class, username,
             return;
         }
 
-        let classes = await get("classes");
-        let active = false;
-
-        for (let c in classes) {
-            // eslint-disable-next-line
-            if (classes[c].id == temp_class_id) {
-                active = classes[c].active;
-                if (active) set_current_class(classes[c]);
-                break;
-            }
-        }
-
-        if (!active) {
-            console.log("No class with id found or class inactive");
+        let class_instance = await get("class_instances", temp_class_instance_id).then(data => data[0]);
+        
+        if (class_instance === undefined) {
+            console.log("Class instance does not exist");
+            document.getElementById("error-message").textContent = "Class instance does not exist";
             return;
         }
 
+        if (!class_instance.active) {
+            console.log("Class instance inactive");
+            document.getElementById("error-message").textContent = "Class instance inactive";
+            return;
+        }
+
+        await get("classes", class_instance.class.id).then(data => {
+            set_current_class(data[0]);
+        });
+        set_current_class_instance(class_instance);
         set_username(temp_username);
 
         nav("/student");
@@ -62,6 +63,7 @@ export default function StudentHome({current_class, set_current_class, username,
                         <input id="username_input" placeholder="Enter Username..." />
                     </div>
                     <button className="form-submit" onClick={(e) => submit(e)}>Submit</button>
+                    <p className="error-message" id="error-message"></p>
                 </div>
             </form>
         </div>

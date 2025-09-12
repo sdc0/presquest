@@ -23,7 +23,7 @@ export default function App() {
                 <Route path='teacher-home' element={<TeacherHome set_instructor={set_instructor} />} />
                 <Route path='student' element={<Student current_class={current_class} current_class_instance={current_class_instance} username={username} />} />
                 <Route path='teacher' element={<Teacher instructor={instructor} set_current_class={set_current_class} set_current_class_instance={set_current_class_instance} />} />
-                <Route path='class-home' element={<ClassHome current_class={current_class} set_current_class={set_current_class} current_class_instance={current_class_instance} instructor={instructor} />} />
+                <Route path='class-home' element={<ClassHome current_class={current_class} current_class_instance={current_class_instance} set_current_class_instance={set_current_class_instance} instructor={instructor} />} />
             </Routes>
         </HashRouter>
     )
