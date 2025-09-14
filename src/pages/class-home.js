@@ -8,20 +8,28 @@ import "./styles.css";
 export default function ClassHome({current_class, current_class_instance, set_current_class_instance, instructor}) {
     const [messages, setMessages] = useState([]);
 
-    useEffect(() => {
-        get("messages", undefined, current_class.id).then(data => {
-            let m = [];
-            for (let d in data) m.push(data[d]);
-            setMessages(m);
-        });
-    }, [current_class]);
-
     async function toggleClass() {
         toggleClassInstance(current_class_instance.id).then(data => {
             set_current_class_instance(data);
             console.log(`Active is now ${data.active}`);
         });
     }
+
+    async function fetchClasses() {
+        let data = await get("messages", undefined, undefined, current_class_instance.id);
+        console.log("fetching data from API");
+        
+        let m = [];
+        for (let d in data) m.push(data[d]);
+        setMessages(m);
+    }
+
+    useEffect(() => {
+        fetchClasses();
+
+        const intervalId = setInterval(fetchClasses, 1000);
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <div className="container centered-vertical centered-horizontal horizontal" id="main-body">
