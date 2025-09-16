@@ -18,7 +18,7 @@ export default function Teacher({instructor, set_current_class, set_current_clas
         });
     }, [instructor]);
 
-    async function enterClass(class_index, id) {
+    async function enterClassInstance(class_index, id) {
         set_current_class(classes[class_index]);
 
         await get("class_instances", id).then(data => {
@@ -27,6 +27,22 @@ export default function Teacher({instructor, set_current_class, set_current_clas
         });
 
         nav("/class-home");
+    }
+
+    async function downloadClassInstance(class_instance_id) {
+        let data = await get("messages", undefined, undefined, class_instance_id);
+        
+        const blob = new Blob([JSON.stringify(data)], { type: 'text/json' });
+        const a = document.createElement('a');
+        a.download = `ClassInstance${class_instance_id}Messages.json`;
+        a.href = window.URL.createObjectURL(blob);
+        const clickEvt = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+        });
+        a.dispatchEvent(clickEvt);
+        a.remove();
     }
 
     return (
@@ -68,8 +84,12 @@ export default function Teacher({instructor, set_current_class, set_current_clas
                                                             <p>{formatDateStringFromDatabase(instance.date)} (Instance ID: {instance.id})</p>
                                                             <button style={{height: "22px", marginLeft: "calc(var(--padding-size) * 2)"}} onClick={(e) => {
                                                                 e.preventDefault();
-                                                                enterClass(i, instance.id);
-                                                            }}>Enter Class</button>
+                                                                enterClassInstance(i, instance.id);
+                                                            }}>Enter Class Instance</button>
+                                                            <button style={{height: "22px", marginLeft: "calc(var(--padding-size) * 2)"}} onClick={(e) => {
+                                                                e.preventDefault();
+                                                                downloadClassInstance(instance.id);
+                                                            }}>Download Messages</button>
                                                         </li>
                                                     )
                                                 })
