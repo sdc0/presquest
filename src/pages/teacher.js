@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { get, createClass, createClassInstance } from "../helpers/api";
+import { get, getMessagesForJSON, createClass, createClassInstance } from "../helpers/api";
 import { formatDateStringFromDatabase } from "../helpers/utils";
 
 import "./styles.css";
@@ -30,7 +30,7 @@ export default function Teacher({instructor, set_current_class, set_current_clas
     }
 
     async function downloadClassInstance(class_instance_id) {
-        let data = await get("messages", undefined, undefined, class_instance_id);
+        let data = await getMessagesForJSON("messages", undefined, undefined, class_instance_id);
         
         const blob = new Blob([JSON.stringify(data)], { type: 'text/json' });
         const a = document.createElement('a');

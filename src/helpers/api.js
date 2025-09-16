@@ -14,6 +14,17 @@ export async function get(type, id=undefined, class_id=undefined, class_instance
     return await fetch(url).then(data => data.json());
 }
 
+export async function getMessagesForJSON(message_id=undefined, class_id=undefined, class_instance_id=undefined, instructor_id=undefined, student_username=undefined) {
+    let url = baseURL + "messages/forJSON?";
+    if (message_id !== undefined) url += "id=" + message_id;
+    if (class_id !== undefined) url += "&class_id=" + class_id;
+    if (class_instance_id !== undefined) url += "&class_instance_id=" + class_instance_id;
+    if (instructor_id !== undefined) url += "&instructor_id=" + instructor_id;
+    if (student_username !== undefined) url += "&student_username=" + student_username;
+
+    return await fetch(url).then(data => data.json());
+}
+
 export async function toggleClassInstance(id) {
     return await fetch(baseURL + "class_instances/toggle", {
         method: "POST",
