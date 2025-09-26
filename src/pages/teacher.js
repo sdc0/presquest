@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { get, getMessagesForJSON, createClass, createClassInstance } from "../helpers/api";
-import { formatDateStringFromDatabase } from "../helpers/utils";
+import { formatDateStringFromDatabase, formatDateForDatabase } from "../helpers/utils";
 
 import "./styles.css";
 
@@ -10,13 +10,18 @@ export default function Teacher({instructor, set_current_class, set_current_clas
     const nav = useNavigate();
     const [classes, set_classes] = useState([]);
     const [checked, set_checked] = useState([]);
+    const [dates, setDates] = useState([]);
 
-    useEffect(() => {
+    const reloadClasses = useCallback(() => {
         get("classes", undefined, undefined, undefined, instructor.id).then(data => {
             set_classes(data);
             console.log(data);
         });
     }, [instructor]);
+
+    useEffect(() => {
+        reloadClasses();
+    }, [reloadClasses]);
 
     async function enterClassInstance(class_index, id) {
         set_current_class(classes[class_index]);
@@ -50,7 +55,7 @@ export default function Teacher({instructor, set_current_class, set_current_clas
             <div className="container container-bg bordered centered-vertical centered-horizontal vertical" style={{padding: "0", margin: "var(--margin-size)"}}>
                 {
                     classes.map((cls, i) => {
-                        if (i >= checked.length) set_checked([...checked, []]);
+                        if (i >= dates.length) setDates([...dates, 0]);
                         return (
                             <>
                                 {
@@ -95,6 +100,24 @@ export default function Teacher({instructor, set_current_class, set_current_clas
                                                 })
                                             }
                                         </ul>
+                                    </div>
+                                    <div>
+                                        <input type="datetime-local" id="datetime-input" onChange={(e) => {
+                                            e.preventDefault();
+                                            let temp = [...dates];
+                                            temp[i] = e.target.value;
+                                            setDates(temp);
+                                        }} />
+                                        <button onClick={(e) => {
+                                            e.preventDefault();
+
+                                            console.log(dates[i].replace('T', ' '));
+
+                                            createClassInstance(cls.id, dates[i].replace('T', ' ')).then(data => {
+                                                console.log(data);
+                                                reloadClasses();
+                                            });
+                                        }}>Create a new Class Instance</button>
                                     </div>
                                 </div>
                             </>
