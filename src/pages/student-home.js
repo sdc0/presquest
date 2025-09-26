@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import { get } from "../helpers/api";
+import { getClasses, getClassInstances } from "../helpers/api";
 import "./styles.css";
 
 export default function StudentHome({set_current_class, set_current_class_instance, set_username}) {
@@ -18,7 +18,7 @@ export default function StudentHome({set_current_class, set_current_class_instan
             return;
         }
 
-        let class_instance = await get("class_instances", temp_class_instance_id).then(data => data[0]);
+        let class_instance = await getClassInstances(temp_class_instance_id).then(data => data[0]);
         
         if (class_instance === undefined) {
             console.log("Class instance does not exist");
@@ -32,7 +32,7 @@ export default function StudentHome({set_current_class, set_current_class_instan
             return;
         }
 
-        await get("classes", class_instance.class.id).then(data => {
+        await getClasses(class_instance.class.id).then(data => {
             set_current_class(data[0]);
         });
         set_current_class_instance(class_instance);

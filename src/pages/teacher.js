@@ -1,21 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 
-import { get, getMessagesForJSON, createClass, createClassInstance } from "../helpers/api";
-import { formatDateStringFromDatabase, formatDateForDatabase } from "../helpers/utils";
+import { getClasses, getClassInstances, getMessagesForJSON, createClass, createClassInstance } from "../helpers/api";
+import { formatDateStringFromDatabase } from "../helpers/utils";
 
 import "./styles.css";
 
 export default function Teacher({instructor, set_current_class, set_current_class_instance}) {
     const nav = useNavigate();
     const [classes, set_classes] = useState([]);
-    const [checked, set_checked] = useState([]);
     const [dates, setDates] = useState([]);
 
     const reloadClasses = useCallback(() => {
-        get("classes", undefined, undefined, undefined, instructor.id).then(data => {
+        getClasses(undefined, instructor.id).then(data => {
             set_classes(data);
-            console.log(data);
         });
     }, [instructor]);
 
@@ -26,8 +24,7 @@ export default function Teacher({instructor, set_current_class, set_current_clas
     async function enterClassInstance(class_index, id) {
         set_current_class(classes[class_index]);
 
-        await get("class_instances", id).then(data => {
-            console.log(data);
+        await getClassInstances(id).then(data => {
             set_current_class_instance(data[0]);
         });
 
@@ -35,7 +32,7 @@ export default function Teacher({instructor, set_current_class, set_current_clas
     }
 
     async function downloadClassInstance(class_instance_id) {
-        let data = await getMessagesForJSON("messages", undefined, undefined, class_instance_id);
+        let data = await getMessagesForJSON(undefined, undefined, class_instance_id);
         
         const blob = new Blob([JSON.stringify(data)], { type: 'text/json' });
         const a = document.createElement('a');
@@ -66,7 +63,7 @@ export default function Teacher({instructor, set_current_class, set_current_clas
                                         <h3 style={{margin: "0", marginTop: "5px"}}>{cls.title} (Class ID: {cls.id})</h3>
                                     </div>
                                     <div>
-                                        <h5>Instructors: </h5>
+                                        <h4>Instructors: </h4>
                                         <ul style={{paddingLeft: "15px"}}>
                                             {
                                                 cls.instructors.map((instructor) => {
@@ -80,7 +77,7 @@ export default function Teacher({instructor, set_current_class, set_current_clas
                                         </ul>
                                     </div>
                                     <div>
-                                        <h5>Class Instances: </h5>
+                                        <h4>Class Instances: </h4>
                                         <ul style={{paddingLeft: "15px"}}>
                                             {
                                                 cls.class_instances.map((instance, j) => {
@@ -124,6 +121,12 @@ export default function Teacher({instructor, set_current_class, set_current_clas
                         )
                     })
                 }
+                <div className="container vertical centered-horizontal" style={{width: "100%"}}>
+                    <div style={{display: "flex", width: "100%", height: "var(--border-width)", backgroundColor: "var(--licorice)"}}></div>
+                    <h3>Create a New Class</h3>
+                    <input placeholder="Enter a Class Code (e.g. BIO235)..."/>
+                    <button>Create</button>
+                </div>
             </div>
         </div>
     )

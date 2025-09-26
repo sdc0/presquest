@@ -1,14 +1,38 @@
 export const baseURL = "https://samcham.pythonanywhere.com/";
 
-export async function get(type, id=undefined, class_id=undefined, class_instance_id=undefined, instructor_id=undefined, student_username=undefined, school=undefined) {
-    if (!["messages", "class_instances", "classes", "instructors"].includes(type)) return undefined;
+export async function getClasses(class_id=undefined, instructor_id=undefined) {
+    let url = baseURL + "classes?";
+    if (class_id !== undefined) url += "id=" + class_id;
+    if (instructor_id !== undefined) url += "&instructor_id=" + instructor_id;
 
-    let url = baseURL + type + "?";
-    if (id !== undefined) url += "id=" + id;
+    return await fetch(url).then(data => data.json());
+}
+
+export async function getClassInstances(class_instance_id=undefined, class_id=undefined, instructor_id=undefined) {
+    let url = baseURL + "class_instances?";
+    if (class_instance_id !== undefined) url += "id=" + class_instance_id;
+    if (class_id !== undefined) url += "&class_id=" + class_id;
+    if (instructor_id !== undefined) url += "&instructor_id=" + instructor_id;
+
+    return await fetch(url).then(data => data.json());
+}
+
+export async function getMessages(message_id=undefined, class_id=undefined, class_instance_id=undefined, instructor_id=undefined, student_username=undefined, school=undefined) {
+    let url = baseURL + "messages?";
+    if (message_id !== undefined) url += "id=" + message_id;
     if (class_id !== undefined) url += "&class_id=" + class_id;
     if (class_instance_id !== undefined) url += "&class_instance_id=" + class_instance_id;
     if (instructor_id !== undefined) url += "&instructor_id=" + instructor_id;
     if (student_username !== undefined) url += "&student_username=" + student_username;
+    if (school !== undefined) url += "&school=" + school;
+
+    return await fetch(url).then(data => data.json());
+}
+
+export async function getInstructors(instructor_id=undefined, class_id=undefined, school=undefined) {
+    let url = baseURL + "instructors?";
+    if (instructor_id !== undefined) url += "id=" + instructor_id;
+    if (class_id !== undefined) url += "&class_id=" + class_id;
     if (school !== undefined) url += "&school=" + school;
 
     return await fetch(url).then(data => data.json());

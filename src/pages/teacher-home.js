@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-import { get, createInstructor } from "../helpers/api";
+import { getInstructors, createInstructor } from "../helpers/api";
 import "./styles.css";
 
 export default function TeacherHome({set_instructor}) {
@@ -16,7 +16,7 @@ export default function TeacherHome({set_instructor}) {
         let school = document.getElementById("school_input").value;
 
         let exists = false;
-        let instructors = await get("instructors");
+        let instructors = await getInstructors();
 
         for (let i in instructors) {
             // eslint-disable-next-line

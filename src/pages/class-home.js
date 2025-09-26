@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { get, toggleClassInstance } from "../helpers/api";
+import { getMessages, toggleClassInstance } from "../helpers/api";
 import { formatDateStringFromDatabase } from "../helpers/utils";
 
 import "./styles.css";
@@ -16,8 +16,7 @@ export default function ClassHome({current_class, current_class_instance, set_cu
     }
 
     async function fetchClasses() {
-        let data = await get("messages", undefined, undefined, current_class_instance.id);
-        console.log("fetching data from API");
+        let data = await getMessages(undefined, undefined, current_class_instance.id);
         
         let m = [];
         for (let d in data) m.push(data[d]);
