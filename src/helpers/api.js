@@ -61,7 +61,7 @@ export async function toggleClassInstance(id) {
     }).then(data => data.json());
 }
 
-export async function createClass(class_code, instructors) {
+export async function createClass(class_code, instructor) {
     return await fetch(baseURL + "classes/create", {
         method: "POST",
         headers: {
@@ -69,7 +69,7 @@ export async function createClass(class_code, instructors) {
         },
         body: JSON.stringify({
             title: class_code,
-            instructor_ids: instructors
+            instructor_id: instructor
         })
     }).then(data => data.json());
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { getMessages, toggleClassInstance } from "../helpers/api";
 import { formatDateStringFromDatabase } from "../helpers/utils";
@@ -15,20 +15,20 @@ export default function ClassHome({current_class, current_class_instance, set_cu
         });
     }
 
-    async function fetchClasses() {
+    const fetchClasses = useCallback(async () => {
         let data = await getMessages(undefined, undefined, current_class_instance.id);
         
         let m = [];
         for (let d in data) m.push(data[d]);
         setMessages(m);
-    }
+    }, [current_class_instance]);
 
     useEffect(() => {
         fetchClasses();
 
         const intervalId = setInterval(fetchClasses, 1000);
         return () => clearInterval(intervalId);
-    }, []);
+    }, [fetchClasses]);
 
     return (
         <div className="container centered-vertical centered-horizontal horizontal" id="main-body">

@@ -49,7 +49,7 @@ export default function Teacher({instructor, set_current_class, set_current_clas
 
     return (
         <div className="container centered-vertical centered-horizontal vertical" id="main-body">
-            <div className="container container-bg bordered centered-vertical centered-horizontal vertical" style={{padding: "0", margin: "var(--margin-size)"}}>
+            <div className="container container-bg bordered centered-vertical centered-horizontal vertical" style={{padding: "0", margin: "calc(var(--margin-size) * 5) var(--margin-size)"}}>
                 {
                     classes.map((cls, i) => {
                         if (i >= dates.length) setDates([...dates, 0]);
@@ -61,20 +61,6 @@ export default function Teacher({instructor, set_current_class, set_current_clas
                                 <div style={{padding: "var(--padding-size)"}}>
                                     <div className="container horizontal centered-horizontal" style={{gap: "10px"}}>
                                         <h3 style={{margin: "0", marginTop: "5px"}}>{cls.title} (Class ID: {cls.id})</h3>
-                                    </div>
-                                    <div>
-                                        <h4>Instructors: </h4>
-                                        <ul style={{paddingLeft: "15px"}}>
-                                            {
-                                                cls.instructors.map((instructor) => {
-                                                    return (
-                                                        <li>
-                                                            <p>{instructor.username} (Instructor ID: {instructor.id}) from {instructor.school}</p>
-                                                        </li>
-                                                    )
-                                                })
-                                            }
-                                        </ul>
                                     </div>
                                     <div>
                                         <h4>Class Instances: </h4>
@@ -124,8 +110,15 @@ export default function Teacher({instructor, set_current_class, set_current_clas
                 <div className="container vertical centered-horizontal" style={{width: "100%"}}>
                     <div style={{display: "flex", width: "100%", height: "var(--border-width)", backgroundColor: "var(--licorice)"}}></div>
                     <h3>Create a New Class</h3>
-                    <input placeholder="Enter a Class Code (e.g. BIO235)..."/>
-                    <button>Create</button>
+                    <input id="class-code-input" placeholder="Enter a Class Code (e.g. BIO235)..."/>
+                    <button onClick={(e) => {
+                        e.preventDefault();
+
+                        createClass(document.getElementById("class-code-input").value, instructor.id).then(data => {
+                            console.log(data);
+                            reloadClasses();
+                        });
+                    }}>Create</button>
                 </div>
             </div>
         </div>
